@@ -1,0 +1,70 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+asset-download
+
+
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Testing
+coverage/
+
+# Next.js (if applicable)
+.next/
+out/
+
+# Production build
+build/
+dist/
+client/build/
+server/build/
+client/dist/
+server/dist/
+
+# Logs and debug files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+server/logs/
+client/logs/
+
+# Misc
+.DS_Store
+*.pem
+
+# Environment files (ignore all but allow .env.example for reference)
+.env
+.env.local
+.env.development
+.env.production
+server/.env
+client/.env
+server/.env.local
+client/.env.local
+
+# Vercel (if deployed on Vercel)
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Ignore generated assets and caches
+.cache/
+server/.cache/
+client/.cache/
+client/.turbo/
+server/.turbo/
+
+# Ignore framework-specific files
+server/.output/
+client/.output/
