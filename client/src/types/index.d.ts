@@ -31,6 +31,12 @@ declare global {
         freePreview?: boolean;
         type: "Text" | "Quiz" | "Video";
     }
+
+    interface SearchCourseCardProps {
+        course: Course;
+        isSelected?: boolean;
+        onClick?: () => void;
+    }
 }
 
 
