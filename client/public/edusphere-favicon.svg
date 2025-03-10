@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="sphereGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4A90E2" />
+      <stop offset="100%" stop-color="#5637D9" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Main sphere shape -->
+  <circle cx="32" cy="32" r="28" fill="url(#sphereGradient)" opacity="0.9" />
+  
+  <!-- Orbit rings representing the educational ecosystem -->
+  <ellipse cx="32" cy="32" rx="24" ry="8" fill="none" stroke="#FFFFFF" stroke-width="1.2" opacity="0.6" transform="rotate(-20,32,32)" />
+  <ellipse cx="32" cy="32" rx="20" ry="12" fill="none" stroke="#FFFFFF" stroke-width="1.2" opacity="0.4" transform="rotate(30,32,32)" />
+  
+  <!-- Knowledge nodes on the orbit -->
+  <circle cx="24" cy="22" r="2.5" fill="#FFC107" filter="url(#glow)" />
+  <circle cx="45" cy="35" r="2" fill="#FF5722" filter="url(#glow)" />
+  <circle cx="20" cy="42" r="2.2" fill="#4CAF50" filter="url(#glow)" />
+  <circle cx="38" cy="20" r="1.8" fill="#E91E63" filter="url(#glow)" />
+  
+  <!-- Connection lines -->
+  <line x1="24" y1="22" x2="32" y2="32" stroke="#FFFFFF" stroke-width="0.8" opacity="0.5" />
+  <line x1="45" y1="35" x2="32" y2="32" stroke="#FFFFFF" stroke-width="0.8" opacity="0.5" />
+  <line x1="20" y1="42" x2="32" y2="32" stroke="#FFFFFF" stroke-width="0.8" opacity="0.5" />
+  <line x1="38" y1="20" x2="32" y2="32" stroke="#FFFFFF" stroke-width="0.8" opacity="0.5" />
+  
+  <!-- Graduation cap icon in the center -->
+  <path d="M32,28 L42,32 L32,36 L22,32 Z" fill="#FFFFFF" opacity="0.9" />
+  <path d="M32,36 L32,40 Q35,38 38,40 V34 L32,36 Z" fill="#FFFFFF" opacity="0.9" />
+</svg>

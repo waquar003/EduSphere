@@ -37,6 +37,15 @@ declare global {
         isSelected?: boolean;
         onClick?: () => void;
     }
+
+    interface SelectedCourseProps {
+        course: Course;
+        handleEnrollNow: (courseId: string) => void;
+    }
+
+    interface AccordionSectionsProps {
+        sections: Section[];
+    }
 }
 
 
