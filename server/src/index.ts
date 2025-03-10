@@ -7,7 +7,7 @@ import dotenv from "dotenv"
 import * as dynamoose from "dynamoose"
 
 // ROUTE IMPORTS
-
+import courseRoute from "./routes/course.routes"
 
 
 //CONFIGURATIONS
@@ -34,6 +34,7 @@ app.get("/", (req, res) => {
     res.send("Hello World")
 })
 
+app.use("/courses", courseRoute)
 
 //SERVER
 const port = process.env.PORT || 3000
