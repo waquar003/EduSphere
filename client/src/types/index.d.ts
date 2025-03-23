@@ -46,6 +46,12 @@ declare global {
     interface AccordionSectionsProps {
         sections: Section[];
     }
+
+    interface HeaderProps {
+        title: string;
+        subtitle: string;
+        rightElement?: ReactNode;
+    }
 }
 
 

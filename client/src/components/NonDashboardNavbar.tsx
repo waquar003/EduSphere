@@ -37,7 +37,7 @@ const NonDashboardNavbar = () => {
                 {/* SIGN IN BUTTON */}
                 <SignedIn>
                     <UserButton 
-                        appearence={{
+                        appearance={{
                             baseTheme: dark,
                             elements: {
                                 userButtonOuterIdentifier: "text-customgreys-dirtyGrey",
