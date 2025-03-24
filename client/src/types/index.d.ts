@@ -52,6 +52,19 @@ declare global {
         subtitle: string;
         rightElement?: ReactNode;
     }
+
+    interface SharedNotificationSettingsProps {
+        title?: string;
+        subtitle?: string;
+    }
+
+    interface UserSettings {
+        theme?: "light" | "dark";
+        emailAlerts?: boolean;
+        smsAlerts?: boolean;
+        courseNotifications?: boolean;
+        notificationFrequency?: "immediate" | "daily" | "weekly";
+    }
 }
 
 
