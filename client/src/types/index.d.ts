@@ -65,6 +65,14 @@ declare global {
         courseNotifications?: boolean;
         notificationFrequency?: "immediate" | "daily" | "weekly";
     }
+
+    interface WizardStepperProps {
+        currentStep: number;
+    }
+
+    interface CoursePreviewProps {
+        course: Course;
+    }
 }
 
 
