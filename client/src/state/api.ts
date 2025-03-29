@@ -56,6 +56,11 @@ export const api = createApi({
     reducerPath: "api",
     tagTypes: ["Courses", "Users"],
     endpoints: (build) => ({
+        /* 
+        ===============
+        COURSES
+        =============== 
+        */
         getCourses: build.query<Course[], { category?: string }>({
             query: ({ category }) => ({
                 url: "courses",
@@ -63,10 +68,69 @@ export const api = createApi({
             }),
             providesTags: ["Courses"],
         }),
+
         getCourse: build.query<Course, string>({
             query: (id) => `course/${id}`,
             providesTags: (result, error, id) => [{ type: "Courses", id }],
         }),
+
+        createCourse: build.mutation<
+        Course,
+        { teacherId: string; teacherName: string }
+        >({
+            query: (body) => ({
+                url: `courses`,
+                method: "POST",
+                body,
+            }),
+            invalidatesTags: ["Courses"],
+        }),
+
+        updateCourse: build.mutation<
+        Course,
+        { courseId: string; formData: FormData }
+        >({
+            query: ({ courseId, formData }) => ({
+                url: `courses/${courseId}`,
+                method: "PUT",
+                body: formData,
+            }),
+            invalidatesTags: (result, error, { courseId }) => [
+                { type: "Courses", id: courseId },
+            ],
+        }),
+
+        deleteCourse: build.mutation<{ message: string }, string>({
+            query: (courseId) => ({
+                url: `courses/${courseId}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Courses"],
+        }),
+
+        getUploadVideoUrl: build.mutation<
+        { uploadUrl: string; videoUrl: string },
+        {
+            courseId: string;
+            chapterId: string;
+            sectionId: string;
+            fileName: string;
+            fileType: string;
+        }
+        >({
+            query: ({ courseId, sectionId, chapterId, fileName, fileType }) => ({
+                url: `courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/get-upload-url`,
+                method: "POST",
+                body: { fileName, fileType },
+            }),
+        }),
+
+        /* 
+        ===============
+        USER CLERK
+        =============== 
+        */
+
         updateUser: build.mutation<User, Partial<User> & { userId: string }>({
             query: ({ userId, ...updatedUser }) => ({
                 url: `users/clerk/${userId}`,
@@ -76,6 +140,11 @@ export const api = createApi({
             invalidatesTags: ["Users"]
         }),
 
+        /* 
+        ===============
+        TRANSACTIONS
+        =============== 
+        */
         createStripePaymentIntent: build.mutation<
             { clientSecret: string },
             { amount: number }
@@ -101,8 +170,12 @@ export const api = createApi({
 export const {
     useGetCoursesQuery,
     useGetCourseQuery,
+    useCreateCourseMutation,
+    useUpdateCourseMutation,
+    useDeleteCourseMutation,
     useUpdateUserMutation,
     useCreateStripePaymentIntentMutation,
     useCreateTransactionMutation,
-    useGetTransactionsQuery
+    useGetTransactionsQuery,
+    useGetUploadVideoUrlMutation,
 } = api;

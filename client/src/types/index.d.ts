@@ -84,6 +84,61 @@ declare global {
         amount: number; // Stored in cents
         savePaymentMethod?: boolean;
     }
+
+    interface TeacherCourseCardProps {
+        course: Course;
+        onEdit: (course: Course) => void;
+        onDelete: (course: Course) => void;
+        isOwner: boolean;
+    }
+
+    interface ToolbarProps {
+        onSearch: (search: string) => void;
+        onCategoryChange: (category: string) => void;
+    }
+
+
+    interface ChapterModalProps {
+        isOpen: boolean;
+        onClose: () => void;
+        sectionIndex: number | null;
+        chapterIndex: number | null;
+        sections: Section[];
+        setSections: React.Dispatch<React.SetStateAction<Section[]>>;
+        courseId: string;
+    }
+    
+    interface SectionModalProps {
+        isOpen: boolean;
+        onClose: () => void;
+        sectionIndex: number | null;
+        sections: Section[];
+        setSections: React.Dispatch<React.SetStateAction<Section[]>>;
+    }
+
+    interface DroppableComponentProps {
+        sections: Section[];
+        setSections: (sections: Section[]) => void;
+        handleEditSection: (index: number) => void;
+        handleDeleteSection: (index: number) => void;
+        handleAddChapter: (sectionIndex: number) => void;
+        handleEditChapter: (sectionIndex: number, chapterIndex: number) => void;
+        handleDeleteChapter: (sectionIndex: number, chapterIndex: number) => void;
+    }
+
+    interface CourseFormData {
+        courseTitle: string;
+        courseDescription: string;
+        courseCategory: string;
+        coursePrice: string;
+        courseStatus: boolean;
+    }
+
+    interface CustomFixedModalProps {
+        isOpen: boolean;
+        onClose: () => void;
+        children: ReactNode;
+    }
 }
 
 
