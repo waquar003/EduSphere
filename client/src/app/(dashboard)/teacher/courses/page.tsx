@@ -13,7 +13,6 @@ import {
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
-
 const Courses = () => {
   const router = useRouter();
   const { user } = useUser();
@@ -67,7 +66,11 @@ const Courses = () => {
   };
 
   if (isLoading) return <Loading />;
-  if (isError || !courses) return <div>Error loading courses.</div>;
+  console.log("Courses data:", courses);
+console.log("IsError:", isError);
+
+
+  // if (isError || !courses) return <div>Error loading courses</div>;
 
   return (
     <div className="teacher-courses">

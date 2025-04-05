@@ -46,7 +46,13 @@ const LoadingSkeleton = () => {
 const Landing = () => {
     const router = useRouter()
     const currentImage = useCarousel({ totalImages: 3 })
-    const { data: courses, isLoading, isError } = useGetCoursesQuery({ category: "all" })
+    const { data, isLoading, isError } = useGetCoursesQuery({ category: "all" })
+
+    // console.log("@@NONDASHBOARD LANDING", data)
+
+    const courses = data?.data || []
+
+    // console.log("@@CRS NONDAASH", courses)
 
     const handleCourseClick = (courseId: string) => {
         router.push(`/search?id=${courseId}`)

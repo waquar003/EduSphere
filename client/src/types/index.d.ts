@@ -139,6 +139,60 @@ declare global {
         onClose: () => void;
         children: ReactNode;
     }
+
+    interface UserCourseProgress {
+        userId: string;
+        courseId: string;
+        enrollmentDate: string;
+        overallProgress: number;
+        sections: SectionProgress[];
+        lastAccessedTimestamp: string;
+    }
+
+    interface ChapterProgress {
+        chapterId: string;
+        completed: boolean;
+    }
+
+    interface SectionProgress {
+        sectionId: string;
+        chapters: ChapterProgress[];
+    }
+
+
+    interface CourseCardProps {
+        course: Course;
+        onGoToCourse: (course: Course) => void;
+    }
+
+    interface PaymentMethod {
+        methodId: string;
+        type: string;
+        lastFour: string;
+        expiry: string;
+    }
+
+
+    interface User {
+        userId: string;
+        firstName?: string;
+        lastName?: string;
+        username?: string;
+        email: string;
+        publicMetadata: {
+            userType: "teacher" | "student";
+        };
+        privateMetadata: {
+            settings?: UserSettings;
+            paymentMethods?: Array<PaymentMethod>;
+            defaultPaymentMethodId?: string;
+            stripeCustomerId?: string;
+        };
+        unsafeMetadata: {
+            bio?: string;
+            urls?: string[];
+        };
+    }
 }
 
 

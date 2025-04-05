@@ -25,6 +25,7 @@
     "helmet": "^8.0.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.2",
+    "pluralize": "^8.0.0",
     "stripe": "^17.7.0",
     "uuid": "^11.1.0"
   },
@@ -33,6 +34,7 @@
     "@types/express": "^5.0.0",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.13.10",
+    "@types/pluralize": "^0.0.33",
     "@types/uuid": "^10.0.0",
     "concurrently": "^9.1.2",
     "nodemon": "^3.1.9",
