@@ -26,27 +26,31 @@ const customBaseQuery = async (
         if(result.error) {
             const errorData = result.error.data;
             const errorMessage = errorData?.message || result.error.status.toString() || "An error occurred";
-            toast.error(`Error: ${errorMessage}`)
+            toast.error(`Error: ${errorMessage}`);
+            return result; // Return the error result directly
         }
 
         const isMuatationRequest = (args as FetchArgs).method && (args as FetchArgs).method !== "GET";
 
-        if(isMuatationRequest) {
+        if(isMuatationRequest && result.data) {
             const successMessage = result.data?.message || "Request processed Successfully";
-            toast.success(successMessage)
+            toast.success(successMessage);
         }
 
         if(result.data) {
             return { data: result.data };
         } else if (
-            result.meta?.response?.status === 24 ||
-            result.error.status === 204
+            result.meta?.response?.status === 204 ||
+            (result.error && result.error.status === 204)
         ){
             return { data: null }
         }
+        
+        // Ensure we always return a result
+        return result;
     } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    
+        toast.error(`Error: ${errorMessage}`);
         return { error: { status: "FETCH_ERROR", error: errorMessage } };
     }
 }
@@ -70,7 +74,7 @@ export const api = createApi({
         }),
 
         getCourse: build.query<Course, string>({
-            query: (id) => `course/${id}`,
+            query: (id) => `courses/${id}`,
             providesTags: (result, error, id) => [{ type: "Courses", id }],
         }),
 

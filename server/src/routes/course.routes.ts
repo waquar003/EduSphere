@@ -11,7 +11,7 @@ router.get("/", listCourses);
 router.post("/", requireAuth(), createCourse)
 
 router.get("/:courseId", getCourse)
-router.get("/:courseId", requireAuth(), upload.single("image"), updateCourse)
+router.put("/:courseId", requireAuth(), upload.single("image"), updateCourse)
 router.delete("/:courseId", requireAuth(), deleteCourse)
 
 

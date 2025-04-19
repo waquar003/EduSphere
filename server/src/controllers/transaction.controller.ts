@@ -13,34 +13,53 @@ if(!process.env.STRIPE_SECRET_KEY) {
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
-export const  createStripePaymentIntent = async (
-    req: Request,
-    res: Response
-): Promise<void>=> {
-    let { amount } = req.body;
+export const createStripePaymentIntent = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  let { amount } = req.body;
 
-    if(!amount || amount <= 0) amount = 50
+  if (!amount || amount <= 0) amount = 50;
 
-    try {
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount,
-            currency: "usd",
-            automatic_payment_methods: {
-                enabled: true,
-                allow_redirects: "never"
-            }
-        })
+  try {
+    // Hardcoded Indian customer info
+    const customer = await stripe.customers.create({
+      name: "Rahul Sharma",
+      email: "rahul.sharma@example.in",
+      address: {
+        line1: "22 MG Road",
+        city: "Bengaluru",
+        state: "Karnataka",
+        postal_code: "560001",
+        country: "IN", // INDIA
+      },
+    });
 
-        res.json({ 
-            message: "Payment intent created successfully", 
-            data: {
-                clientSecret: paymentIntent.client_secret,
-            }
-        })
-    } catch (error) {
-        res.status(500).json({ message: "Error creating payment intent", error })
-    }
-}
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency: "usd",
+      customer: customer.id,
+      automatic_payment_methods: {
+        enabled: true,
+        allow_redirects: "never",
+      },
+      description: "Purchase of online course",
+    });
+
+    res.json({
+      message: "Payment intent created successfully",
+      data: {
+        clientSecret: paymentIntent.client_secret,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error creating payment intent",
+      error: error instanceof Error ? error.message : error,
+    });
+  }
+};
+
 
 
 export const createTransaction = async (

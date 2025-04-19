@@ -42,7 +42,7 @@ app.get("/", (req, res) => {
 
 app.use("/courses", courseRoutes)
 app.use("/users/clerk", requireAuth(), userClerkRoutes)
-app.use("/transaction", requireAuth(), transactionRoutes)
+app.use("/transactions", requireAuth(), transactionRoutes)
 app.use("/users/course-progress", requireAuth(), userCourseProgressRoutes)
 
 //SERVER

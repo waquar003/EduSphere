@@ -13,12 +13,14 @@ export const useCourseProgressData = () => {
   const [hasMarkedComplete, setHasMarkedComplete] = useState(false);
   const [updateProgress] = useUpdateUserCourseProgressMutation();
 
-  const { data: course, isLoading: courseLoading } = useGetCourseQuery(
-    (courseId as string) ?? "",
-    {
-      skip: !courseId,
-    }
-  );
+  const {
+    data: courseResponse,
+    isLoading: courseLoading,
+  } = useGetCourseQuery((courseId as string) ?? "", {
+    skip: !courseId,
+  });
+
+  const course = courseResponse?.data;
 
   const { data: userProgress, isLoading: progressLoading } =
     useGetUserCourseProgressQuery(
@@ -33,7 +35,7 @@ export const useCourseProgressData = () => {
 
   const isLoading = !isLoaded || courseLoading || progressLoading;
 
-  const currentSection = course?.sections.find((s) =>
+  const currentSection = course?.sections?.find((s) =>
     s.chapters.some((c) => c.chapterId === chapterId)
   );
 

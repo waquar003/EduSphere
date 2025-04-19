@@ -26,7 +26,7 @@ export const courseCategories = [
 
 // Convert cents to dollars (e.g., 4999 -> "49.99")
 export function centsToDollars(cents: number | undefined): string {
-  return ((cents || 0) / 100).toString();
+  return ((cents || 0) / 100).toFixed(2);
 }
 
 
