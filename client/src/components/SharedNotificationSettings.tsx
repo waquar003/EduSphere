@@ -13,7 +13,7 @@ import { Button } from './ui/button';
 
 const SharedNotificationSettings = ({
     title="Notification Settings",
-    subtitle="Manaage your notification settings",
+    subtitle="Manage your notification settings",
 }: SharedNotificationSettingsProps) => {
 
     const { user } = useUser();
@@ -32,7 +32,7 @@ const SharedNotificationSettings = ({
     })
 
     const onSubmit = async (data: NotificationSettingsFormData) => {
-        if(!user)   return ;
+        if(!user) return;
 
         const updatedUser = {
             userId: user.id,
@@ -52,53 +52,69 @@ const SharedNotificationSettings = ({
         }
     }
 
-    if(!user)   return <div>Please sign i to mannage your settings.</div>
+    if(!user) return (
+        <div className="w-full p-8 text-center text-lg text-gray-600 bg-white rounded-lg shadow-md">
+            Please sign in to manage your settings.
+        </div>
+    )
+    
     return (
-        <div className='notification-settings'>
+        <div className="w-full bg-white rounded-lg shadow-md p-6">
             <Header title={title} subtitle={subtitle} /> 
             <Form {...methods}>
                 <form 
                     onSubmit={methods.handleSubmit(onSubmit)}
-                    className='notification-settings__form'
+                    className="mt-8 space-y-6"
                 >
-                    <div className="notification-settings__fields">
-                        <CustomFormField
-                            name="courseNotification"
-                            label='Course Notifications'
-                            type='switch'
-                        />
+                    <div className="space-y-5 divide-y divide-[#EEF0F2]">
+                        <div className="py-4">
+                            <CustomFormField
+                                name="courseNotification"
+                                label='Course Notifications'
+                                type='switch'
+                            />
+                        </div>
                         
-                        <CustomFormField
-                            name="emailAlert"
-                            label='Email Alert'
-                            type='switch'
-                        />
+                        <div className="py-4">
+                            <CustomFormField
+                                name="emailAlert"
+                                label='Email Alert'
+                                type='switch'
+                            />
+                        </div>
                         
-                        <CustomFormField
-                            name="smsAlert"
-                            label='SMS Alert'
-                            type='switch'
-                        />
+                        <div className="py-4">
+                            <CustomFormField
+                                name="smsAlert"
+                                label='SMS Alert'
+                                type='switch'
+                            />
+                        </div>
                         
-                        <CustomFormField
-                            name="notificationFrequency"
-                            label='Notification Frequency'
-                            type='select'
-                            options={[
-                                { value: "immediate", label: "Immediate"},
-                                { value: "daily", label: "Daily"},
-                                { value: "weekly", label: "Weekly"},
-                            ]}
-                        />
+                        <div className="py-4">
+                            <CustomFormField
+                                name="notificationFrequency"
+                                label='Notification Frequency'
+                                type='select'
+                                options={[
+                                    { value: "immediate", label: "Immediate"},
+                                    { value: "daily", label: "Daily"},
+                                    { value: "weekly", label: "Weekly"},
+                                ]}
+                            />
+                        </div>
                     </div>
 
-                    <Button type='submit' className='notification-settings__submit'>
+                    <Button 
+                        type='submit' 
+                        className="w-full sm:w-auto px-6 py-3 bg-[#0056D2] hover:bg-[#004BB4] text-white font-medium rounded-md shadow-sm transition-colors duration-200 flex items-center justify-center"
+                    >
                         Update Settings
                     </Button>
                 </form>
             </Form>
         </div>
-  )
+    )
 }
 
 export default SharedNotificationSettings

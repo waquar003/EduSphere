@@ -23,10 +23,12 @@ const Courses = () => {
     skip: !isLoaded || !user,
   });
 
-  const filteredCourses = useMemo(() => {
-    if (!courses) return [];
+  const courseList = courses?.data ?? [];
 
-    return courses.filter((course) => {
+  const filteredCourses = useMemo(() => {
+    if (!Array.isArray(courseList)) return [];
+
+    return courseList.filter((course) => {
       const matchesSearch = course.title
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
@@ -34,7 +36,7 @@ const Courses = () => {
         selectedCategory === "all" || course.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [courses, searchTerm, selectedCategory]);
+  }, [courseList, searchTerm, selectedCategory]);
 
   const handleGoToCourse = (course: Course) => {
     if (
@@ -57,25 +59,27 @@ const Courses = () => {
   };
 
   if (!isLoaded || isLoading) return <Loading />;
-  if (!user) return <div>Please sign in to view your courses.</div>;
-  if (isError || !courses || courses.length === 0)
-    return <div>You are not enrolled in any courses yet.</div>;
+  if (!user) return <div className="p-6 text-center text-lg text-gray-600">Please sign in to view your courses.</div>;
+  if (isError || !Array.isArray(courseList) || courseList.length === 0)
+    return <div className="p-6 text-center text-lg text-gray-600 bg-[#F5F7FA] min-h-screen flex items-center justify-center">You are not enrolled in any courses yet.</div>;
 
   return (
-    <div className="user-courses">
-      <Header title="My Courses" subtitle="View your enrolled courses" />
-      <Toolbar
-        onSearch={setSearchTerm}
-        onCategoryChange={setSelectedCategory}
-      />
-      <div className="user-courses__grid">
-        {filteredCourses.map((course) => (
-          <CourseCard
-            key={course.courseId}
-            course={course}
-            onGoToCourse={handleGoToCourse}
-          />
-        ))}
+    <div className="bg-[#F5F7FA] min-h-screen px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto">
+        <Header title="My Courses" subtitle="View your enrolled courses" />
+        <Toolbar
+          onSearch={setSearchTerm}
+          onCategoryChange={setSelectedCategory}
+        />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-8">
+          {filteredCourses.map((course) => (
+            <CourseCard
+              key={course.courseId}
+              course={course}
+              onGoToCourse={handleGoToCourse}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

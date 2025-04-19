@@ -46,7 +46,11 @@ export default function DroppableComponent() {
     <DragDropContext onDragEnd={handleSectionDragEnd}>
       <Droppable droppableId="sections">
         {(provided) => (
-          <div ref={provided.innerRef} {...provided.droppableProps}>
+          <div 
+            ref={provided.innerRef} 
+            {...provided.droppableProps}
+            className="space-y-4"
+          >
             {sections.map((section: Section, sectionIndex: number) => (
               <Draggable
                 key={section.sectionId}
@@ -57,11 +61,7 @@ export default function DroppableComponent() {
                   <div
                     ref={draggableProvider.innerRef}
                     {...draggableProvider.draggableProps}
-                    className={`droppable-section ${
-                      sectionIndex % 2 === 0
-                        ? "droppable-section--even"
-                        : "droppable-section--odd"
-                    }`}
+                    className={`bg-white rounded-lg border border-[#EEF0F2] shadow-sm overflow-hidden`}
                   >
                     <SectionHeader
                       section={section}
@@ -79,6 +79,7 @@ export default function DroppableComponent() {
                           <div
                             ref={droppableProvider.innerRef}
                             {...droppableProvider.droppableProps}
+                            className="px-4 py-2 space-y-2"
                           >
                             {section.chapters.map(
                               (chapter: Chapter, chapterIndex: number) => (
@@ -104,25 +105,24 @@ export default function DroppableComponent() {
                       </Droppable>
                     </DragDropContext>
 
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        dispatch(
-                          openChapterModal({
-                            sectionIndex,
-                            chapterIndex: null,
-                          })
-                        )
-                      }
-                      className="add-chapter-button group"
-                    >
-                      <Plus className="add-chapter-button__icon" />
-                      <span className="add-chapter-button__text">
-                        Add Chapter
-                      </span>
-                    </Button>
+                    <div className="p-3 bg-[#F5F7FA] border-t border-[#EEF0F2]">
+                      <Button
+                        type="button"
+                        className="w-full bg-white border border-[#0056D2] text-[#0056D2] hover:bg-[#D8E8FF] rounded-md transition-colors duration-200 font-medium"
+                        size="sm"
+                        onClick={() =>
+                          dispatch(
+                            openChapterModal({
+                              sectionIndex,
+                              chapterIndex: null,
+                            })
+                          )
+                        }
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        <span>Add Chapter</span>
+                      </Button>
+                    </div>
                   </div>
                 )}
               </Draggable>
@@ -147,36 +147,35 @@ const SectionHeader = ({
   const dispatch = useAppDispatch();
 
   return (
-    <div className="droppable-section__header" {...dragHandleProps}>
-      <div className="droppable-section__title-wrapper">
-        <div className="droppable-section__title-container">
-          <div className="droppable-section__title">
-            <GripVertical className="h-6 w-6 mb-1" />
-            <h3 className="text-lg font-medium">{section.sectionTitle}</h3>
+    <div 
+      className="bg-[#D8E8FF] p-4" 
+      {...dragHandleProps}
+    >
+      <div className="flex flex-col">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center">
+            <GripVertical className="h-5 w-5 text-[#0056D2] mr-2 cursor-move" />
+            <h3 className="text-lg font-medium text-gray-800">{section.sectionTitle}</h3>
           </div>
-          <div className="droppable-chapter__actions">
+          <div className="flex items-center space-x-2">
             <Button
               type="button"
-              variant="ghost"
-              size="sm"
-              className="p-0"
+              className="text-gray-600 hover:text-[#0056D2] bg-transparent p-1 rounded-md transition-colors"
               onClick={() => dispatch(openSectionModal({ sectionIndex }))}
             >
-              <Edit className="h-5 w-5" />
+              <Edit className="h-4 w-4" />
             </Button>
             <Button
               type="button"
-              variant="ghost"
-              size="sm"
-              className="p-0"
+              className="text-gray-600 hover:text-red-500 bg-transparent p-1 rounded-md transition-colors"
               onClick={() => dispatch(deleteSection(sectionIndex))}
             >
-              <Trash2 className="h-5 w-5" />
+              <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         </div>
         {section.sectionDescription && (
-          <p className="droppable-section__description">
+          <p className="text-sm text-gray-600 mt-1 ml-7">
             {section.sectionDescription}
           </p>
         )}
@@ -203,22 +202,19 @@ const ChapterItem = ({
       ref={draggableProvider.innerRef}
       {...draggableProvider.draggableProps}
       {...draggableProvider.dragHandleProps}
-      className={`droppable-chapter ${
-        chapterIndex % 2 === 1
-          ? "droppable-chapter--odd"
-          : "droppable-chapter--even"
-      }`}
+      className={`flex justify-between items-center bg-white rounded-md border border-[#EEF0F2] p-3 hover:bg-gray-50 transition-colors`}
     >
-      <div className="droppable-chapter__title">
-        <GripVertical className="h-4 w-4 mb-[2px]" />
-        <p className="text-sm">{`${chapterIndex + 1}. ${chapter.title}`}</p>
+      <div className="flex items-center">
+        <GripVertical className="h-4 w-4 text-gray-400 mr-2 cursor-move" />
+        <p className="text-sm text-gray-700">{`${chapterIndex + 1}. ${chapter.title}`}</p>
+        {chapter.type === "Video" && (
+          <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full">Video</span>
+        )}
       </div>
-      <div className="droppable-chapter__actions">
+      <div className="flex items-center space-x-1">
         <Button
           type="button"
-          variant="ghost"
-          size="sm"
-          className="droppable-chapter__button"
+          className="text-gray-500 hover:text-[#0056D2] bg-transparent p-1 rounded transition-colors"
           onClick={() =>
             dispatch(
               openChapterModal({
@@ -232,9 +228,7 @@ const ChapterItem = ({
         </Button>
         <Button
           type="button"
-          variant="ghost"
-          size="sm"
-          className="droppable-chapter__button"
+          className="text-gray-500 hover:text-red-500 bg-transparent p-1 rounded transition-colors"
           onClick={() =>
             dispatch(
               deleteChapter({

@@ -49,17 +49,21 @@ const CourseEditor = () => {
   });
 
   useEffect(() => {
-    if (course) {
+    if (course?.data) {
+      const courseData = course.data;
+  
       methods.reset({
-        courseTitle: course.title,
-        courseDescription: course.description,
-        courseCategory: course.category,
-        coursePrice: centsToDollars(course.price),
-        courseStatus: course.status === "Published",
+        courseTitle: courseData.title,
+        courseDescription: courseData.description,
+        courseCategory: courseData.category,
+        coursePrice: centsToDollars(courseData.price),
+        courseStatus: courseData.status === "Published",
       });
-      dispatch(setSections(course.sections || []));
+  
+      dispatch(setSections(courseData.sections || []));
     }
-  }, [course, methods]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [course, methods, dispatch]);
+  
 
   const onSubmit = async (data: CourseFormData) => {
     try {
@@ -82,11 +86,15 @@ const CourseEditor = () => {
     }
   };
 
+  if (isLoading || !course) {
+    return <p className="text-center py-8 text-gray-600 font-medium">Loading course editor...</p>;
+  }
+
   return (
-    <div>
+    <div className="bg-[#F5F7FA] min-h-screen p-6">
       <div className="flex items-center gap-5 mb-5">
         <button
-          className="flex items-center border border-customgreys-dirtyGrey rounded-lg p-2 gap-2 cursor-pointer hover:bg-customgreys-dirtyGrey hover:text-white-100 text-customgreys-dirtyGrey"
+          className="flex items-center border border-[#EEF0F2] rounded-lg p-2 gap-2 cursor-pointer hover:bg-[#0056D2] hover:text-white transition-colors duration-200 text-gray-600 bg-white shadow-sm"
           onClick={() => router.push("/teacher/courses", { scroll: false })}
         >
           <ArrowLeft className="w-4 h-4" />
@@ -111,11 +119,11 @@ const CourseEditor = () => {
                       ? "text-green-500"
                       : "text-yellow-500"
                   }`}
-                  inputClassName="data-[state=checked]:bg-green-500"
+                  inputClassName="data-[state=checked]:bg-[#0056D2]"
                 />
                 <Button
                   type="submit"
-                  className="bg-primary-700 hover:bg-primary-600"
+                  className="bg-[#0056D2] hover:bg-[#004BB4] text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200 shadow-sm"
                 >
                   {methods.watch("courseStatus")
                     ? "Update Published Course"
@@ -125,16 +133,15 @@ const CourseEditor = () => {
             }
           />
 
-          <div className="flex justify-between md:flex-row flex-col gap-10 mt-5 font-dm-sans">
-            <div className="basis-1/2">
-              <div className="space-y-4">
+          <div className="flex justify-between md:flex-row flex-col gap-10 mt-5 font-sans">
+            <div className="basis-1/2 bg-white p-6 rounded-lg shadow-sm border border-[#EEF0F2]">
+              <div className="space-y-6">
                 <CustomFormField
                   name="courseTitle"
                   label="Course Title"
                   type="text"
                   placeholder="Write course title here"
-                  className="border-none"
-                  initialValue={course?.title}
+                  className="border-[#EEF0F2] rounded-lg focus:ring-[#0056D2] focus:border-[#0056D2]"
                 />
 
                 <CustomFormField
@@ -142,7 +149,7 @@ const CourseEditor = () => {
                   label="Course Description"
                   type="textarea"
                   placeholder="Write course description here"
-                  initialValue={course?.description}
+                  className="border-[#EEF0F2] rounded-lg focus:ring-[#0056D2] focus:border-[#0056D2]"
                 />
 
                 <CustomFormField
@@ -150,6 +157,7 @@ const CourseEditor = () => {
                   label="Course Category"
                   type="select"
                   placeholder="Select category here"
+                  className="border-[#EEF0F2] rounded-lg focus:ring-[#0056D2] focus:border-[#0056D2]"
                   options={[
                     { value: "technology", label: "Technology" },
                     { value: "science", label: "Science" },
@@ -159,7 +167,6 @@ const CourseEditor = () => {
                       label: "Artificial Intelligence",
                     },
                   ]}
-                  initialValue={course?.category}
                 />
 
                 <CustomFormField
@@ -167,14 +174,14 @@ const CourseEditor = () => {
                   label="Course Price"
                   type="number"
                   placeholder="0"
-                  initialValue={course?.price}
+                  className="border-[#EEF0F2] rounded-lg focus:ring-[#0056D2] focus:border-[#0056D2]"
                 />
               </div>
             </div>
 
-            <div className="bg-customgreys-darkGrey mt-4 md:mt-0 p-4 rounded-lg basis-1/2">
-              <div className="flex justify-between items-center mb-2">
-                <h2 className="text-2xl font-semibold text-secondary-foreground">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-[#EEF0F2] mt-4 md:mt-0 basis-1/2">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-semibold text-gray-800">
                   Sections
                 </h2>
 
@@ -185,22 +192,24 @@ const CourseEditor = () => {
                   onClick={() =>
                     dispatch(openSectionModal({ sectionIndex: null }))
                   }
-                  className="border-none text-primary-700 group"
+                  className="border border-[#0056D2] text-[#0056D2] hover:bg-[#D8E8FF] hover:text-[#0056D2] transition-colors duration-200 rounded-lg"
                 >
-                  <Plus className="mr-1 h-4 w-4 text-primary-700 group-hover:white-100" />
-                  <span className="text-primary-700 group-hover:white-100">
-                    Add Section
-                  </span>
+                  <Plus className="mr-1 h-4 w-4" />
+                  <span>Add Section</span>
                 </Button>
               </div>
 
-              {isLoading ? (
-                <p>Loading course content...</p>
-              ) : sections.length > 0 ? (
-                <DroppableComponent />
-              ) : (
-                <p>No sections available</p>
-              )}
+              <div className="min-h-[200px] rounded-lg">
+                {isLoading ? (
+                  <p className="text-center py-8 text-gray-600">Loading course content...</p>
+                ) : sections.length > 0 ? (
+                  <DroppableComponent />
+                ) : (
+                  <div className="flex items-center justify-center h-40 border border-dashed border-gray-300 rounded-lg bg-gray-50">
+                    <p className="text-gray-500">No sections available</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </form>

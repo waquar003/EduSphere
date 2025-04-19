@@ -2,32 +2,37 @@ import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 import React from "react";
 
+interface WizardStepperProps {
+  currentStep: number;
+}
+
 const WizardStepper = ({ currentStep }: WizardStepperProps) => {
   return (
-    <div className="wizard-stepper">
-      <div className="wizard-stepper__container">
+    <div className="py-6">
+      <div className="flex justify-center items-center">
         {[1, 2, 3].map((step, index) => (
           <React.Fragment key={step}>
-            <div className="wizard-stepper__step">
+            <div className="flex flex-col items-center">
               <div
-                className={cn("wizard-stepper__circle", {
-                  "wizard-stepper__circle--completed":
-                    currentStep > step || (currentStep === 3 && step === 3),
-                  "wizard-stepper__circle--current":
-                    currentStep === step && step !== 3,
-                  "wizard-stepper__circle--upcoming": currentStep < step,
-                })}
+                className={cn(
+                  "w-10 h-10 rounded-full flex items-center justify-center text-white transition-all duration-200",
+                  {
+                    "bg-[#0056D2] shadow-md": currentStep > step || (currentStep === 3 && step === 3),
+                    "bg-[#0056D2] shadow-md": currentStep === step && step !== 3,
+                    "bg-white border-2 border-[#EEF0F2] text-gray-400": currentStep < step,
+                  }
+                )}
               >
                 {currentStep > step || (currentStep === 3 && step === 3) ? (
                   <Check className="w-5 h-5" />
                 ) : (
-                  <span>{step}</span>
+                  <span className={currentStep < step ? "text-gray-400" : ""}>{step}</span>
                 )}
               </div>
               <p
-                className={cn("wizard-stepper__text", {
-                  "wizard-stepper__text--active": currentStep >= step,
-                  "wizard-stepper__text--inactive": currentStep < step,
+                className={cn("mt-2 text-sm font-medium", {
+                  "text-[#0056D2]": currentStep >= step,
+                  "text-gray-400": currentStep < step,
                 })}
               >
                 {step === 1 && "Details"}
@@ -37,9 +42,9 @@ const WizardStepper = ({ currentStep }: WizardStepperProps) => {
             </div>
             {index < 2 && (
               <div
-                className={cn("wizard-stepper__line", {
-                  "wizard-stepper__line--completed": currentStep > step,
-                  "wizard-stepper__line--incomplete": currentStep <= step,
+                className={cn("w-20 h-1 mx-2", {
+                  "bg-[#0056D2]": currentStep > step,
+                  "bg-[#EEF0F2]": currentStep <= step,
                 })}
               />
             )}

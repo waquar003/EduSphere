@@ -34,8 +34,8 @@ const ChaptersSidebar = () => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (isLoading) return <Loading />;
-  if (!user) return <div>Please sign in to view course progress.</div>;
-  if (!course || !userProgress) return <div>Error loading course content</div>;
+  if (!user) return <div className="p-4 text-gray-700">Please sign in to view course progress.</div>;
+  if (!course || !userProgress) return <div className="p-4 text-gray-700">Error loading course content</div>;
 
   const toggleSection = (sectionTitle: string) => {
     setExpandedSections((prevSections) =>
@@ -52,17 +52,16 @@ const ChaptersSidebar = () => {
   };
 
   return (
-    <div ref={sidebarRef} className="chapters-sidebar">
-      <div className="chapters-sidebar__header">
-        <h2 className="chapters-sidebar__title">{course.title}</h2>
-        <hr className="chapters-sidebar__divider" />
+    <div ref={sidebarRef} className="fixed left-0 z-10 flex flex-col w-64 h-screen ml-16 overflow-y-auto bg-white border-r border-[#EEF0F2] shadow-sm">
+      <div className="p-4 border-b border-[#EEF0F2]">
+        <h2 className="text-lg font-semibold text-gray-800">{course.title}</h2>
       </div>
       {course.sections.map((section, index) => (
         <Section
           key={section.sectionId}
           section={section}
           index={index}
-          sectionProgress={userProgress.sections.find(
+          sectionProgress={userProgress?.sections?.find(
             (s) => s.sectionId === section.sectionId
           )}
           chapterId={chapterId as string}
@@ -108,29 +107,28 @@ const Section = ({
   const isExpanded = expandedSections.includes(section.sectionTitle);
 
   return (
-    <div className="chapters-sidebar__section">
+    <div className="border-b border-[#EEF0F2]">
       <div
         onClick={() => toggleSection(section.sectionTitle)}
-        className="chapters-sidebar__section-header"
+        className="flex flex-col gap-1 p-4 cursor-pointer hover:bg-[#F5F7FA]"
       >
-        <div className="chapters-sidebar__section-title-wrapper">
-          <p className="chapters-sidebar__section-number">
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-medium text-gray-500">
             Section 0{index + 1}
           </p>
           {isExpanded ? (
-            <ChevronUp className="chapters-sidebar__chevron" />
+            <ChevronUp className="w-4 h-4 text-gray-500" />
           ) : (
-            <ChevronDown className="chapters-sidebar__chevron" />
+            <ChevronDown className="w-4 h-4 text-gray-500" />
           )}
         </div>
-        <h3 className="chapters-sidebar__section-title">
+        <h3 className="text-sm font-medium text-gray-800">
           {section.sectionTitle}
         </h3>
       </div>
-      <hr className="chapters-sidebar__divider" />
 
       {isExpanded && (
-        <div className="chapters-sidebar__section-content">
+        <div className="px-4 py-2 bg-[#F5F7FA]">
           <ProgressVisuals
             section={section}
             sectionProgress={sectionProgress}
@@ -147,7 +145,6 @@ const Section = ({
           />
         </div>
       )}
-      <hr className="chapters-sidebar__divider" />
     </div>
   );
 };
@@ -165,8 +162,8 @@ const ProgressVisuals = ({
 }) => {
   return (
     <>
-      <div className="chapters-sidebar__progress">
-        <div className="chapters-sidebar__progress-bars">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex flex-grow gap-1 mr-2">
           {section.chapters.map((chapter: any) => {
             const isCompleted = sectionProgress?.chapters.find(
               (c: any) => c.chapterId === chapter.chapterId
@@ -175,18 +172,18 @@ const ProgressVisuals = ({
               <div
                 key={chapter.chapterId}
                 className={cn(
-                  "chapters-sidebar__progress-bar",
-                  isCompleted && "chapters-sidebar__progress-bar--completed"
+                  "h-1 flex-grow rounded-full",
+                  isCompleted ? "bg-[#0056D2]" : "bg-gray-300"
                 )}
               ></div>
             );
           })}
         </div>
-        <div className="chapters-sidebar__trophy">
-          <Trophy className="chapters-sidebar__trophy-icon" />
+        <div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#D8E8FF]">
+          <Trophy className="w-3 h-3 text-[#0056D2]" />
         </div>
       </div>
-      <p className="chapters-sidebar__progress-text">
+      <p className="mb-3 text-xs font-medium text-gray-500">
         {completedChapters}/{totalChapters} COMPLETED
       </p>
     </>
@@ -213,7 +210,7 @@ const ChaptersList = ({
   ) => void;
 }) => {
   return (
-    <ul className="chapters-sidebar__chapters">
+    <ul className="space-y-1">
       {section.chapters.map((chapter: any, index: number) => (
         <Chapter
           key={chapter.chapterId}
@@ -268,38 +265,40 @@ const Chapter = ({
 
   return (
     <li
-      className={cn("chapters-sidebar__chapter", {
-        "chapters-sidebar__chapter--current": isCurrentChapter,
-      })}
+      className={cn(
+        "flex items-center gap-3 p-2 cursor-pointer rounded-lg transition-colors",
+        isCurrentChapter ? "bg-[#D8E8FF]" : "hover:bg-gray-100"
+      )}
       onClick={() => handleChapterClick(sectionId, chapter.chapterId)}
     >
       {isCompleted ? (
         <div
-          className="chapters-sidebar__chapter-check"
+          className="flex items-center justify-center flex-shrink-0 w-6 h-6 text-white rounded-full bg-[#0056D2]"
           onClick={handleToggleComplete}
           title="Toggle completion status"
         >
-          <CheckCircle className="chapters-sidebar__check-icon" />
+          <CheckCircle className="w-4 h-4" />
         </div>
       ) : (
         <div
-          className={cn("chapters-sidebar__chapter-number", {
-            "chapters-sidebar__chapter-number--current": isCurrentChapter,
-          })}
+          className={cn(
+            "flex items-center justify-center flex-shrink-0 w-6 h-6 text-sm font-medium rounded-full",
+            isCurrentChapter ? "bg-[#0056D2] text-white" : "bg-gray-200 text-gray-600"
+          )}
         >
           {index + 1}
         </div>
       )}
       <span
-        className={cn("chapters-sidebar__chapter-title", {
-          "chapters-sidebar__chapter-title--completed": isCompleted,
-          "chapters-sidebar__chapter-title--current": isCurrentChapter,
-        })}
+        className={cn(
+          "text-sm font-medium flex-grow",
+          isCompleted ? "text-gray-400" : isCurrentChapter ? "text-[#0056D2]" : "text-gray-700"
+        )}
       >
         {chapter.title}
       </span>
       {chapter.type === "Text" && (
-        <FileText className="chapters-sidebar__text-icon" />
+        <FileText className="w-4 h-4 text-gray-400" />
       )}
     </li>
   );

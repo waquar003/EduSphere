@@ -25,20 +25,24 @@ export default function DashboardLayout({ children }: {children: React.ReactNode
         }
     }, [isCoursePage, pathName]);
 
-    if(!isLoaded)   return <Loading /> 
-    if(!user)   return <div>Please sign in to access thsi page.</div>
+    if(!isLoaded) return <div className="flex items-center justify-center w-full h-screen bg-white"><Loading /></div>
+    if(!user) return <div className="flex items-center justify-center w-full h-screen text-lg font-medium text-gray-700 bg-white">Please sign in to access this page.</div>
 
     return (
     <SidebarProvider>
-        <div className="dashboard">
+        <div className="flex w-full bg-[#F5F7FA]">
             <AppSidebar />
-            <div className="dashboard__content">
+            <div className="flex flex-col flex-grow min-h-screen">
                 {courseId && <ChaptersSidebar />}
-                <div className={cn("dashboard__main", isCoursePage && "dashboard__main--not-course")}
+                <div 
+                    className={cn(
+                        "flex flex-col flex-grow",
+                        isCoursePage && "ml-64"
+                    )}
                     style={{ height: "100vh" }}
                 >
                     <Navbar isCoursePage={isCoursePage}/>
-                    <main className="dashboard__body">
+                    <main className="flex-grow p-6 overflow-auto">
                         {children}
                     </main>
                 </div>

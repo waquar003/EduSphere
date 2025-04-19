@@ -4,12 +4,12 @@ import React from "react";
 
 export default function Layout({ children }: {children: React.ReactNode}) {
   return (
-    <div className="nondashboard-layout">
-        <NonDashboardNavbar />
-        <main className="nondashboard-layout__main">
-          {children}
-        </main>
-        <Footer />
+    <div className="flex flex-col min-h-screen">
+      <NonDashboardNavbar />
+      <main className="flex-grow py-6 md:py-10">
+        {children}
+      </main>
+      <Footer />
     </div>
   );
 }

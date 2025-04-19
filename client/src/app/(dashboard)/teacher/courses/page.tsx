@@ -13,11 +13,12 @@ import {
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import React, { useMemo, useState } from "react";
+
 const Courses = () => {
   const router = useRouter();
   const { user } = useUser();
   const {
-    data: courses,
+    data,
     isLoading,
     isError,
   } = useGetCoursesQuery({ category: "all" });
@@ -28,9 +29,10 @@ const Courses = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  const filteredCourses = useMemo(() => {
-    if (!courses) return [];
+  // Defensive check: ensure courses is always an array
+  const courses = Array.isArray(data?.data) ? data.data : [];
 
+  const filteredCourses = useMemo(() => {
     return courses.filter((course) => {
       const matchesSearch = course.title
         .toLowerCase()
@@ -65,22 +67,18 @@ const Courses = () => {
     });
   };
 
-  if (isLoading) return <Loading />;
-  console.log("Courses data:", courses);
-console.log("IsError:", isError);
-
-
-  // if (isError || !courses) return <div>Error loading courses</div>;
+  if (isLoading || !Array.isArray(data?.data)) return <Loading />;
+  if (isError) return <div className="text-red-500 p-4 text-center font-medium">Error loading courses</div>;
 
   return (
-    <div className="teacher-courses">
+    <div className="bg-[#F5F7FA] min-h-screen pb-10">
       <Header
         title="Courses"
         subtitle="Browse your courses"
         rightElement={
           <Button
             onClick={handleCreateCourse}
-            className="teacher-courses__header"
+            className="bg-[#0056D2] hover:bg-[#004BB4] text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 shadow-sm"
           >
             Create Course
           </Button>
@@ -90,16 +88,22 @@ console.log("IsError:", isError);
         onSearch={setSearchTerm}
         onCategoryChange={setSelectedCategory}
       />
-      <div className="teacher-courses__grid">
-        {filteredCourses.map((course) => (
-          <TeacherCourseCard
-            key={course.courseId}
-            course={course}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            isOwner={course.teacherId === user?.id}
-          />
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4 md:px-6 lg:px-8 mt-6">
+        {filteredCourses.length > 0 ? (
+          filteredCourses.map((course) => (
+            <TeacherCourseCard
+              key={course.courseId}
+              course={course}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              isOwner={course.teacherId === user?.id}
+            />
+          ))
+        ) : (
+          <div className="col-span-full text-center text-gray-500 py-10">
+            No courses found. Create your first course!
+          </div>
+        )}
       </div>
     </div>
   );

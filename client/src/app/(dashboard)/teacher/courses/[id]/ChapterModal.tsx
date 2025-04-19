@@ -99,18 +99,23 @@ const ChapterModal = () => {
 
   return (
     <CustomModal isOpen={isChapterModalOpen} onClose={onClose}>
-      <div className="chapter-modal">
-        <div className="chapter-modal__header">
-          <h2 className="chapter-modal__title">Add/Edit Chapter</h2>
-          <button onClick={onClose} className="chapter-modal__close">
-            <X className="w-6 h-6" />
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-6 border-b border-[#EEF0F2] pb-4">
+          <h2 className="text-xl font-semibold text-gray-800">
+            {chapter ? "Edit Chapter" : "Add Chapter"}
+          </h2>
+          <button 
+            onClick={onClose} 
+            className="text-gray-500 hover:text-gray-700 transition-colors"
+          >
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         <Form {...methods}>
           <form
             onSubmit={methods.handleSubmit(onSubmit)}
-            className="chapter-modal__form"
+            className="space-y-4"
           >
             <CustomFormField
               name="title"
@@ -130,7 +135,7 @@ const ChapterModal = () => {
               name="video"
               render={({ field: { onChange, value } }) => (
                 <FormItem>
-                  <FormLabel className="text-customgreys-dirtyGrey text-sm">
+                  <FormLabel className="text-sm font-medium text-gray-700">
                     Chapter Video
                   </FormLabel>
                   <FormControl>
@@ -144,30 +149,37 @@ const ChapterModal = () => {
                             onChange(file);
                           }
                         }}
-                        className="border-none bg-customgreys-darkGrey py-2 cursor-pointer"
+                        className="border border-[#EEF0F2] rounded-md bg-white p-2 cursor-pointer text-sm w-full"
                       />
                       {typeof value === "string" && value && (
-                        <div className="my-2 text-sm text-gray-600">
+                        <div className="mt-2 text-sm text-gray-600">
                           Current video: {value.split("/").pop()}
                         </div>
                       )}
                       {value instanceof File && (
-                        <div className="my-2 text-sm text-gray-600">
+                        <div className="mt-2 text-sm text-gray-600">
                           Selected file: {value.name}
                         </div>
                       )}
                     </div>
                   </FormControl>
-                  <FormMessage className="text-red-400" />
+                  <FormMessage className="text-red-500 text-xs" />
                 </FormItem>
               )}
             />
 
-            <div className="chapter-modal__actions">
-              <Button type="button" variant="outline" onClick={onClose}>
+            <div className="flex justify-end gap-3 pt-4 border-t border-[#EEF0F2] mt-6">
+              <Button 
+                type="button" 
+                className="bg-white border border-[#EEF0F2] text-gray-700 hover:bg-gray-50 rounded-md transition-colors px-4"
+                onClick={onClose}
+              >
                 Cancel
               </Button>
-              <Button type="submit" className="bg-primary-700">
+              <Button 
+                type="submit" 
+                className="bg-[#0056D2] hover:bg-[#004BB4] text-white rounded-md transition-colors px-6"
+              >
                 Save
               </Button>
             </div>

@@ -5,33 +5,34 @@ import React from 'react'
 
 const SelectedCourse = ({ course, handleEnrollNow }: SelectedCourseProps) => {
   return (
-    <div className='selected-course'>
-        <div>
-            <h3 className="selected-course__title">{course.title}</h3>
-            <p className="selected-course__author">
-                By {course.teacherName} | { " " } 
-                <span className='selected-course__enrollment-count'>
-                    {course?.enrollments?.length}
+    <div className='bg-white rounded-lg shadow-md overflow-hidden border border-[#EEF0F2] transition-all duration-300'>
+        <div className="p-6 border-b border-[#EEF0F2]">
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">{course.title}</h3>
+            <p className="text-gray-600">
+                By <span className="font-medium">{course.teacherName}</span> | {" "}
+                <span className='text-[#0056D2] font-medium'>
+                    {course?.enrollments?.length} students enrolled
                 </span>
             </p>
         </div>
-        <div className="selected-course__content">
-            <p className="selected-course__description">{course.description}</p>
+        
+        <div className="p-6">
+            <p className="text-gray-700 mb-6 leading-relaxed">{course.description}</p>
 
-            <div className="selected-course__section">
-                <h4 className="selected-course__sections-title">
+            <div className="mb-8">
+                <h4 className="text-lg font-semibold text-gray-800 mb-4">
                     Course Content
                 </h4>
                 <AccordionSections sections={course.sections} />
             </div>
 
-            <div className="selected-course__footer">
-                <span className="selecetd-course__price">
+            <div className="flex items-center justify-between pt-4 border-t border-[#EEF0F2]">
+                <span className="text-2xl font-bold text-gray-900">
                     {formatPrice(course.price)}
                 </span>
                 <Button
                     onClick={() => handleEnrollNow(course.courseId)}
-                    className="bg-primary-700 hover:bg-primary-600"
+                    className="bg-[#0056D2] hover:bg-[#004BB4] text-white px-6 py-2 rounded-md font-medium transition-colors duration-200 shadow-sm hover:shadow"
                 >
                     Enroll Now
                 </Button>

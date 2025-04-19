@@ -17,27 +17,27 @@ const Toolbar = ({ onSearch, onCategoryChange }: ToolbarProps) => {
   };
 
   return (
-    <div className="toolbar">
+    <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-lg shadow-sm border border-[#EEF0F2]">
       <input
         type="text"
         value={searchTerm}
         onChange={(e) => handleSearch(e.target.value)}
         placeholder="Search courses"
-        className="toolbar__search"
+        className="flex-grow px-4 py-2 border border-[#EEF0F2] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0056D2] focus:border-transparent transition-all w-full sm:w-auto"
       />
       <Select onValueChange={onCategoryChange}>
-        <SelectTrigger className="toolbar__select">
+        <SelectTrigger className="w-full sm:w-52 border border-[#EEF0F2] rounded-lg focus:ring-2 focus:ring-[#0056D2] focus:border-transparent px-4 py-2">
           <SelectValue placeholder="Categories" />
         </SelectTrigger>
-        <SelectContent className="bg-customgreys-primarybg hover:bg-customgreys-primarybg">
-          <SelectItem value="all" className="toolbar__select-item">
+        <SelectContent className="bg-white border border-[#EEF0F2] shadow-md rounded-lg">
+          <SelectItem value="all" className="hover:bg-[#D8E8FF] focus:bg-[#D8E8FF] cursor-pointer py-2">
             All Categories
           </SelectItem>
           {courseCategories.map((category) => (
             <SelectItem
               key={category.value}
               value={category.value}
-              className="toolbar__select-item"
+              className="hover:bg-[#D8E8FF] focus:bg-[#D8E8FF] cursor-pointer py-2"
             >
               {category.label}
             </SelectItem>

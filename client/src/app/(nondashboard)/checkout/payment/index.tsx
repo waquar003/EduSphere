@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import StripeProvider from "./StripeProvider";
 import {
   PaymentElement,
@@ -17,6 +17,7 @@ import { toast } from "sonner";
 const PaymentPageContent = () => {
   const stripe = useStripe();
   const elements = useElements();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [createTransaction] = useCreateTransactionMutation();
   const { navigateToStep } = useCheckoutNavigation();
   const { course, courseId } = useCurrentCourse();
@@ -25,39 +26,56 @@ const PaymentPageContent = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     if (!stripe || !elements) {
       toast.error("Stripe service is not available");
       return;
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_LOCAL_URL
-      ? `http://${process.env.NEXT_PUBLIC_LOCAL_URL}`
-      : process.env.NEXT_PUBLIC_VERCEL_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-      : undefined;
+    setIsSubmitting(true);
 
-    const result = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${baseUrl}/checkout?step=3&id=${courseId}`,
-      },
-      redirect: "if_required",
-    });
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_LOCAL_URL
+        ? `http://${process.env.NEXT_PUBLIC_LOCAL_URL}`
+        : process.env.NEXT_PUBLIC_VERCEL_URL
+        ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+        : window.location.origin; // Fallback to current origin
 
-    if (result.paymentIntent?.status === "succeeded") {
-      const transactionData: Partial<Transaction> = {
-        transactionId: result.paymentIntent.id,
-        userId: user?.id,
-        courseId: courseId,
-        paymentProvider: "stripe",
-        amount: course?.price || 0,
-      };
+      const result = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${baseUrl}/checkout?step=3&id=${courseId}`,
+        },
+        redirect: "if_required",
+      });
 
-      await createTransaction(transactionData), navigateToStep(3);
+      if (result.error) {
+        toast.error(result.error.message || "Payment failed. Please try again.");
+      } else if (result.paymentIntent?.status === "succeeded") {
+        try {
+          const transactionData = {
+            transactionId: result.paymentIntent.id,
+            userId: user?.id,
+            courseId: courseId,
+            paymentProvider: "stripe" as const,
+            amount: course?.price || 0,
+          };
+          
+          await createTransaction(transactionData);
+          toast.success("Payment successful!");
+          navigateToStep(3);
+        } catch (err) {
+          console.error("Error creating transaction record:", err);
+          toast.error("Payment recorded but we couldn't complete your order. Please contact support.");
+        }
+      }
+    } catch (err) {
+      console.error("Payment error:", err);
+      toast.error("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
-
   const handleSignOutAndNavigate = async () => {
     await signOut();
     navigateToStep(1);
@@ -66,35 +84,37 @@ const PaymentPageContent = () => {
   if (!course) return null;
 
   return (
-    <div className="payment">
-      <div className="payment__container">
+    <div className="max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Order Summary */}
-        <div className="payment__preview">
+        <div className="bg-white rounded-lg shadow-md border border-[#EEF0F2] overflow-hidden">
           <CoursePreview course={course} />
         </div>
 
-        {/* Pyament Form */}
-        <div className="payment__form-container">
-          <form
-            id="payment-form"
-            onSubmit={handleSubmit}
-            className="payment__form"
-          >
-            <div className="payment__content">
-              <h1 className="payment__title">Checkout</h1>
-              <p className="payment__subtitle">
+        {/* Payment Form */}
+        <div className="bg-white rounded-lg shadow-md border border-[#EEF0F2] p-6">
+          <form id="payment-form" onSubmit={handleSubmit}>
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-gray-800">
+                Checkout
+              </h2>
+              
+              <p className="text-gray-600">
                 Fill out the payment details below to complete your purchase.
               </p>
-
-              <div className="payment__method">
-                <h3 className="payment__method-title">Payment Method</h3>
-
-                <div className="payment__card-container">
-                  <div className="payment__card-header">
-                    <CreditCard size={24} />
-                    <span>Credit/Debit Card</span>
+              
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-gray-700">
+                  Payment Method
+                </h3>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <CreditCard size={24} className="text-[#0056D2]" />
+                    Credit/Debit Card
                   </div>
-                  <div className="payment__card-element">
+                  
+                  <div className="p-4 bg-[#F5F7FA] rounded-lg border border-[#EEF0F2]">
                     <PaymentElement />
                   </div>
                 </div>
@@ -105,23 +125,24 @@ const PaymentPageContent = () => {
       </div>
 
       {/* Navigation Buttons */}
-      <div className="payment__actions">
+      <div className="flex justify-between mt-8">
         <Button
-          className="hover:bg-white-50/10"
+          className="border border-[#0056D2] text-[#0056D2] bg-white hover:bg-[#D8E8FF] transition-colors"
           onClick={handleSignOutAndNavigate}
           variant="outline"
           type="button"
+          disabled={isSubmitting}
         >
           Switch Account
         </Button>
-
+        
         <Button
           form="payment-form"
           type="submit"
-          className="payment__submit"
-          disabled={!stripe || !elements}
+          className="bg-[#0056D2] text-white hover:bg-[#004BB4] transition-colors shadow-md"
+          disabled={!stripe || !elements || isSubmitting}
         >
-          Pay with Credit Card
+          {isSubmitting ? "Processing..." : "Pay with Credit Card"}
         </Button>
       </div>
     </div>

@@ -74,23 +74,29 @@ const SectionModal = () => {
 
   return (
     <CustomModal isOpen={isSectionModalOpen} onClose={onClose}>
-      <div className="section-modal">
-        <div className="section-modal__header">
-          <h2 className="section-modal__title">Add/Edit Section</h2>
-          <button onClick={onClose} className="section-modal__close">
-            <X className="w-6 h-6" />
+      <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-auto">
+        <div className="flex items-center justify-between mb-6 border-b border-[#EEF0F2] pb-4">
+          <h2 className="text-xl font-semibold text-gray-800">
+            {selectedSectionIndex === null ? "Add New Section" : "Edit Section"}
+          </h2>
+          <button 
+            onClick={onClose} 
+            className="text-gray-500 hover:text-gray-700 transition-colors duration-200 p-1 rounded-full hover:bg-gray-100"
+          >
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         <Form {...methods}>
           <form
             onSubmit={methods.handleSubmit(onSubmit)}
-            className="section-modal__form"
+            className="space-y-6"
           >
             <CustomFormField
               name="title"
               label="Section Title"
               placeholder="Write section title here"
+              className="border-[#EEF0F2] rounded-lg focus:ring-[#0056D2] focus:border-[#0056D2]"
             />
 
             <CustomFormField
@@ -98,14 +104,23 @@ const SectionModal = () => {
               label="Section Description"
               type="textarea"
               placeholder="Write section description here"
+              className="border-[#EEF0F2] rounded-lg focus:ring-[#0056D2] focus:border-[#0056D2]"
             />
 
-            <div className="section-modal__actions">
-              <Button type="button" variant="outline" onClick={onClose}>
+            <div className="flex justify-end items-center space-x-4 pt-4 border-t border-[#EEF0F2]">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={onClose}
+                className="border border-[#EEF0F2] text-gray-600 hover:bg-gray-50 transition-colors duration-200 rounded-lg px-4 py-2"
+              >
                 Cancel
               </Button>
-              <Button type="submit" className="bg-primary-700">
-                Save
+              <Button 
+                type="submit" 
+                className="bg-[#0056D2] hover:bg-[#004BB4] text-white transition-colors duration-200 rounded-lg px-6 py-2 shadow-sm"
+              >
+                {selectedSectionIndex === null ? "Add Section" : "Update Section"}
               </Button>
             </div>
           </form>
