@@ -3,28 +3,40 @@ import { NextResponse } from "next/server"
 
 const isStudentRoute = createRouteMatcher(["/user/(.*)"])
 const isTeacherRoute = createRouteMatcher(["/teacher/(.*)"])
-
+const isCompleteProfileRoute = createRouteMatcher(["/complete-profile"])
 
 export default clerkMiddleware(async (auth, req) => {
-    const { sessionClaims } = await auth();
-    const userRole = 
-    (sessionClaims?.metadata as { userType: "student" | "teacher"})
-    ?.userType || "teacher"
+    const { sessionClaims, userId } = await auth();
     
-    // console.log("@@METADATA", userRole)
-    if(isStudentRoute(req)) {
-        if(userRole !== "student") {
+    if (isCompleteProfileRoute(req) && userId) {
+        return NextResponse.next();
+    }
+
+    const userRole = (sessionClaims?.metadata as { userType: "student" | "teacher"})?.userType;
+    
+    console.log("@@METADATA", userRole, "@@USER_ID", userId);
+    
+
+    if (userId && !userRole) {
+        const url = new URL("/complete-profile", req.url);
+        return NextResponse.redirect(url);
+    }
+    
+    if (isStudentRoute(req)) {
+        if (userRole !== "student") {
             const url = new URL("/teacher/courses", req.url);
-            return NextResponse.redirect(url)
+            return NextResponse.redirect(url);
         }
     }
     
-    if(isTeacherRoute(req)) {
-        if(userRole !== "teacher") {
+    if (isTeacherRoute(req)) {
+        if (userRole !== "teacher") {
             const url = new URL("/user/courses", req.url);
-            return NextResponse.redirect(url)
+            return NextResponse.redirect(url);
         }
     }
+    
+    return NextResponse.next();
 })
 
 export const config = {
